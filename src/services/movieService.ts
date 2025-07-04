@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from 'axios';
+import axios from 'axios';
 import { type Movie } from '../types/movie';
 
 const API_KEY = import.meta.env.VITE_TMDB_TOKEN;
@@ -12,12 +12,12 @@ interface FetchMoviesResponse {
 }
 
 export async function fetchMovies(query: string): Promise<Movie[]> {
-  const response: AxiosResponse<FetchMoviesResponse> = await axios.get<FetchMoviesResponse>(BASE_URL, {
+  const response = await axios.get<FetchMoviesResponse>(BASE_URL, {
     params: { query },
     headers: {
       Authorization: `Bearer ${API_KEY}`,
     },
   });
-
+  
   return response.data.results;
 }
