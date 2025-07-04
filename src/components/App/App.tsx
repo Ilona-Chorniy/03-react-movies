@@ -1,16 +1,12 @@
 import SearchBar from '../SearchBar/SearchBar';
 import { useState } from 'react';
 import { type Movie } from '../../types/movie';
-import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import MovieGrid from '../MovieGrid/MovieGrid';
 import MovieModal from '../MovieModal/MovieModal';
-import axios from 'axios';
 import Loader from '../Loader/Loader';
-import ErrorMessage from '../ErrorMessage/ErrorMessage'; 
-
-const API_KEY = import.meta.env.VITE_TMDB_TOKEN;
-const BASE_URL = 'https://api.themoviedb.org/3/search/movie';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import { fetchMovies } from '../../services/movieService';
 
 export default function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -20,26 +16,20 @@ export default function App() {
 
   async function handleSearch(query: string) {
     setLoading(true);
-    setError(false);     
+    setError(false);
     setMovies([]);
 
     try {
-      const response = await axios.get(BASE_URL, {
-        params: { query },
-        headers: { Authorization: `Bearer ${API_KEY}` },
-      });
+      const results = await fetchMovies(query);
 
-      const data = response.data;
-
-      if (data.results.length === 0) {
+      if (results.length === 0) {
         toast.error('No movies found for your request.');
-        setLoading(false);
         return;
       }
 
-      setMovies(data.results);
+      setMovies(results);
     } catch (error) {
-      setError(true);     
+      setError(true);
       toast.error('Something went wrong. Please try again later.');
       console.error(error);
     } finally {
