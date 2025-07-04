@@ -3,33 +3,34 @@ import { createPortal } from 'react-dom';
 import css from './MovieModal.module.css';
 import type { Movie } from '../../types/movie';
 
-type MovieModalProps = {
+interface MovieModalProps {
     movie: Movie;
     onClose: () => void;
-};
+}
 
 const modalRoot = document.getElementById('modal-root')!;
 
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
-useEffect(() => {
+    useEffect(() => {
     function onEsc(e: KeyboardEvent) {
-    if (e.key === 'Escape') 
-        console.log('Escape')
+        if (e.key === 'Escape') {
+        console.log('Escape');
         onClose();
     }
+    }
 
-    document.body.style.overflow = 'hidden';  
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onEsc);
 
     return () => {
-    document.body.style.overflow = '';      
-    window.removeEventListener('keydown', onEsc);
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', onEsc);
     };
-}, [onClose]);
+    }, [onClose]);
 
     function onBackdropClick(e: React.MouseEvent) {
-    if (e.target === e.currentTarget) onClose();  
-}
+    if (e.target === e.currentTarget) onClose();
+    }
 
     return createPortal(
     <div
@@ -65,4 +66,4 @@ useEffect(() => {
     </div>,
     modalRoot,
     );
-}   
+}
